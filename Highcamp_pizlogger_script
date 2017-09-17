@@ -5,17 +5,12 @@
 
 'Declare Variables and Units
 Public BattV
-Public FCLoaded
 Public PTemp_C
 Public AVWRC
 Public VW(6)
 Public TT
-Public TT0
 Public Digits
-Public Digits0
 Public Lvl
-Public ZMode
-Public CAvg
 
 Alias VW(1)=Freq
 Alias VW(2)=Amp
@@ -26,11 +21,9 @@ Alias VW(6)=TR
 
 Units BattV=Volts
 Units PTemp_C=Deg C
-Units TT=deg C
-Units TT0=deg C
+Units TT=Deg C
 Units Digits=digits
-Units Digits0=Digits
-Units Lvl=ft
+Units Lvl=m
 Units Freq=Hz
 Units Amp=mV RMS
 Units NFreq=Hz
@@ -56,11 +49,7 @@ EndTable
 'Main Program
 BeginProg
 	SerialOpen(COM1,38400,0,0,0)
-	'Initialize calibration variables for
 	'Geokon 4500 Series Vibrating Wire Piezometer calculation 'Lvl'
-	CAvg=1 : Digits0=0 : TT0=0
-	'Load the most recent calibration values from the CalHist table
-	FCLoaded=LoadFieldCal(True)
 	'Main Scan
 	Scan(15,Min,1,0)
 		'Default CR1000 Datalogger Battery Voltage measurement 'BattV'
@@ -73,8 +62,8 @@ BeginProg
 		TT=1/(1.4051E-3+2.369E-4*LN(TR)+1.019E-7*LN(TR)^3)-273.15
 		'Calculate digits 'Digits'
 		Digits=Freq^2/1000
-		'Calculate water level 'Lvl' (PSI)
-		Lvl=(Digits-8857)*-0.001713+(TT-10.8)*0.002004
+		'Calculate water level 'Lvl' (MPa) without temperature compensation (+(TT-10.8)*0.002004)
+		Lvl=(Digits-8857)*-0.001713
 		'Convert water level 'Lvl' from MPa to m
 		Lvl=Lvl*101.97
 		CallTable Table1
